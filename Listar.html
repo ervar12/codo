@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos y Proveedores</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <h1>Bienvenido Administrador!</h1>
+    <h2>Gestión de Productos y Proveedores</h2>
+
+      <!--  <form action="#" method="get"> -->
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código Producto</th>
+                        <th>Nombre Producto</th>
+                        <th>Descripción</th> 
+                        <th>Proveedor</th>                
+                        <th align="right">Categoria</th>
+                        <th>Presentación</th>
+                        <th align="right">Precio</th>
+                    </tr>
+                </thead>
+                <tbody id="verProductosSectionjs"> </tbody>
+            </table>
+        </div>
+
+        <div class="contenedor-centrado">
+            <a href="index.html">Menu principal</a>
+        </div>
+        
+
+        <script>
+            // Listado
+const URL = "http://127.0.0.1:5000/"
+// Realizamos la solicitud GET al servidor para obtener todos los productos
+fetch(URL + 'productos')
+    .then(function (response) {
+        if (response.ok) {return response.json(); }
+    })
+    .then(function (data) {
+        let verProductosSectionjs = document.getElementById('verProductosSectionjs');
+
+        // Iteramos sobre los productos y agregamos filas a la tabla
+        for (let producto of data) {
+            let fila = document.createElement('tr');
+            fila.innerHTML = '<td>' + producto.id_prod + '</td>' +
+                '<td>' + producto.nombre_prod + '</td>' +
+                '<td align="right">' + producto.des_prod + '</td>' +
+                '<td align="right">' + producto.proveedor + '</td>' +
+                // Mostrar miniatura de la imagen
+               // '<td><img src=./static/imagenes/' + producto.imagen_url +' alt="Imagen del producto" style="width: 100px;"></td>' +
+                '<td align="right">' + producto.categoria + '</td>'+
+                '<td align="right">' + producto.presentacion + '</td>' +
+                '<td align="right">' + producto.precio + '</td>'  ;
+                verProductosSectionjs.appendChild(fila);
+        }
+    })
+    .catch(function (error) {
+        // Código para manejar errores
+        alert('Error al obtener los productos.');
+    });
+        </script>
+        </body)

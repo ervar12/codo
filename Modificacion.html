@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Producto</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+    <h1>Modificar Productos </h1>
+    <h3>Debe completar todos los campos</h3>
+    <div id="app">
+        <form @submit.prevent="obtenerProducto">
+            <label for="codigo">Código de producto a modificar: </label>
+            <input type="text" v-model="codigo" required><br>
+            <button type="submit">Modificar </button> <a href="index.html">Menu principal</a>
+        </form>
+            <!--    id_prod, nuevo_nombre, nueva_descripcion, nuevo_proveedor, nueva_categoria, nueva_presentacion, nuevo_precio-->
+        <div v-if="mostrarDatosProducto">
+            <h2>Datos del Producto</h2>
+            <form @submit.prevent="guardarCambios">
+
+                <label for="nuevo_nombre"> Nombre:</label>
+                <input type="text" id="nuevo_nombre" v-model="nuevo_nombre" required><br>
+                
+                <label for="nueva_descripcion">Descripción:</label>
+                <input type="text" id="nueva_descripcion" v-model="nueva_descripcion" required><br>
+
+                <label for="nuevo_proveedor">Proveedor:</label>
+                <input type="text" id="nuevo_proveedor" v-model="nuevo_proveedor" required><br>
+
+                <label for="nueva_categoria">Categoria:</label>
+                <input type="text" step="0.01" id="nueva_categoria" v-model="nueva_categoria" required><br>
+
+                <label for="nueva_presentacion">Presentacion:</label>
+                <input type="text" step="0.01" id="nueva_presentacion" v-model="nueva_presentacion" required><br>
+
+                <label for="nuevo_precio">Precio:</label>
+                <input type="number" id="nuevo_precio" v-model="nuevo_precio" required><br>
+
+                <button type="submit">Guardar Cambios</button>
+                <a href="Modificacion.html">Cancelar</a>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script> 
+    <script>
+        const URL = "http://127.0.0.1:5000/"
+
+        const app = Vue.createApp({
+            data() {
+                return {
+                    id_prod: '',
+                    nombre:'',
+                    descripcion: '',
+                    proveedor: '', 
+                    categoria: '',
+                    presentacion: '',
+                    precio: '',
+                    mostrarDatosProducto: false,
+                };
+            },
+            methods: {
+                obtenerProducto() {
+                    fetch(URL + 'productos/' + this.codigo)
+                        .then(response => response.json())
+                        .then(data => {
+                            this.id_prod= data.codigo;
+                            this.nombre_prod= data.nombre;
+                            this.des_prod= data.descripcion;
+                            this.proveedor = data.proveedor;
+                            this.categoria=  data.categoria;
+                            this.presentacion= data.presentacion;
+                            this.precio =  data.precio
+                            this.mostrarDatosProducto = true;
+                        })
+                        .catch(error => console.error('Error:', error));
+                    
+                },
+
+                
+                guardarCambios() {
+                    const formData = new FormData();
+                    formData.append('codigo', this.codigo);
+                    formData.append('nombre', this.nuevo_nombre);
+                    formData.append('descripcion', this.nueva_descripcion);
+                    formData.append('proveedor', this.nuevo_proveedor);
+                    formData.append('categoria', this.nueva_categoria);
+                    formData.append('presentacion', this.nueva_presentacion);
+                    formData.append('precio', this.nuevo_precio);
+
+
+                    fetch(URL + 'productos/' + this.codigo, {
+                        method: 'PUT',
+                        body: formData,
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert('Producto actualizado correctamente');
+                            this.limpiarFormulario();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error al actualizar el producto');
+                        });
+                },
+                limpiarFormulario() {
+                    this.codigo = '';
+                    this.nombre = '';
+                    this.descripcion = '';
+                    this.proveedor = '';
+                    this.categoria = '';
+                    this.presentacion = '';
+                    this.precio = '';
+                    this.mostrarDatosProducto = false;
+                }
+            }
+        });
+
+
+        app.mount('#app');
+    </script>
+
+</body>
+</html>
